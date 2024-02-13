@@ -11,7 +11,6 @@ import { MeshBasicMaterial } from "three/src/materials/MeshBasicMaterial";
 import { PlaneGeometry } from "three/src/geometries/PlaneGeometry";
 import { InteractionManager } from "three.interactive";
 
-
 export function callThreeJS(useAppContext, howMany, navigation) {
   // Check if it's a touch-capable device
   const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
@@ -43,7 +42,9 @@ export function callThreeJS(useAppContext, howMany, navigation) {
     if (useAppContext.state.data.length > 0) {
       setTimeout(() => {
         scrollbar.scrollTo(0, 5, 10);
-        setTimeout(() => { scrolling = false; }, 1000);
+        setTimeout(() => {
+          scrolling = false;
+        }, 1000);
       }, 7000);
     }
   }
@@ -92,9 +93,6 @@ export function callThreeJS(useAppContext, howMany, navigation) {
     { treatTouchEventsAsMouseEvents: true },
   ]);
 
-  // Touch handling for mobile devices
-  mobileTouchHandling(camera, render);
-
   // ******* SQUARES
   let squares = [];
   let squarestStart = -1;
@@ -137,12 +135,6 @@ export function callThreeJS(useAppContext, howMany, navigation) {
     square.addEventListener("mouseout", () => {
       document.body.style.cursor = "default";
     });
-
-    // square.addEventListener("touchstart", (e) => {
-    //   e.stopPropagation();
-    //   useAppContext.updateState("layer", true);
-    //   navigation(`/${item.id}`);
-    // });
   });
 
   // Camera Position
@@ -208,8 +200,8 @@ export function callThreeJS(useAppContext, howMany, navigation) {
       scrolling = false;
       // console.log('pause', scrollPercent.toFixed(4), savedScroll.toFixed(4));
     }
-    if (scrollPercent == 0) scrolling = false;
-    if (scrollPercent == 100) scrolling = false;
+    if (scrollPercent === 0) scrolling = false;
+    if (scrollPercent === 100) scrolling = false;
 
     // smooth-scrollbar fixings
     const offset = status.offset;
@@ -220,6 +212,11 @@ export function callThreeJS(useAppContext, howMany, navigation) {
 
     savedScroll = scrollPercent;
   });
+
+  // Touch handling for mobile devices
+  if (plane) {
+    mobileTouchHandling(camera, render, howMany, interactionManager, scrollPercent, squares, plane);
+  }
 
   // Resizing
   window.addEventListener("resize", onWindowResize, true);
