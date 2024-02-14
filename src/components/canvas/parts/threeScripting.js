@@ -12,10 +12,9 @@ import { PlaneGeometry } from "three/src/geometries/PlaneGeometry";
 import { InteractionManager } from "three.interactive";
 
 export function callThreeJS(useAppContext, howMany, navigation) {
-  // Check if it's a touch-capable device
-  const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
-
-  const damping = window.innerWidth < 1000 || isTouchDevice ? 0.05 : 0.1;
+  let damping;
+  if (window.innerWidth < 1000) damping = 0.05
+  else damping = 0.1
 
   let fixedHeader = document.querySelector("#header");
   let fixedCanvas = document.querySelector("#three-canvas");
@@ -83,7 +82,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   );
   const bottomPlane = new Mesh(
     new PlaneGeometry(howLong, 5, howLong * 2, littleSquares),
-    new MeshBasicMaterial({ color: gridColor, wireframe: false })
+    new MeshBasicMaterial({ color: gridColor, wireframe: true })
   );
 
   scene.add(plane, rightPlane, leftPlane, topPlane, bottomPlane);
@@ -135,6 +134,11 @@ export function callThreeJS(useAppContext, howMany, navigation) {
     square.addEventListener("mouseout", () => {
       document.body.style.cursor = "default";
     });
+    square.addEventListener("touchstart", (e) => {
+      e.stopPropagation();
+      useAppContext.updateState("layer", true);
+      navigation(`/${item.id}`);
+    });
   });
 
   // Camera Position
@@ -144,18 +148,18 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   plane.position.set(0, 0, -howLong / 2);
   // Right plane position
   rightPlane.position.set(2.5, 0, 0);
-  rightPlane.rotation.y = -90 * ((2 * 3.14) / 360);
+  rightPlane.rotation.y = -90 * ((2 * Math.PI) / 360);
   // Left plane position
   leftPlane.position.set(-2.5, 0, 0);
-  leftPlane.rotation.y = 90 * ((2 * 3.14) / 360);
+  leftPlane.rotation.y = 90 * ((2 * Math.PI) / 360);
   // Top plane position
   topPlane.position.set(0, 2.5, 0);
-  topPlane.rotation.x = 90 * ((2 * 3.14) / 360);
-  topPlane.rotation.z = 90 * ((2 * 3.14) / 360);
+  topPlane.rotation.x = 90 * ((2 * Math.PI) / 360);
+  topPlane.rotation.z = 90 * ((2 * Math.PI) / 360);
   // Bottom plane position
   bottomPlane.position.set(0, -2.5, 0);
-  bottomPlane.rotation.x = 90 * ((2 * 3.14) / 360);
-  bottomPlane.rotation.z = 90 * ((2 * 3.14) / 360);
+  bottomPlane.rotation.x = 90 * ((2 * Math.PI) / 360);
+  bottomPlane.rotation.z = 90 * ((2 * Math.PI) / 360);
 
   // Animate function
   render();
@@ -215,7 +219,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
 
   // Touch handling for mobile devices
   if (plane) {
-    mobileTouchHandling(camera, render, howMany, interactionManager, scrollPercent, squares, plane);
+    mobileTouchHandling(camera, render, howMany, interactionManager, scrollPercent, squares, plane, useAppContext, navigation, scene);
   }
 
   // Resizing
