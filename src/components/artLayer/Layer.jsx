@@ -26,22 +26,14 @@ function Layer() {
     }
   }, [useAppContext.state.layer]);
 
-  // Listen for changes in the location
   useEffect(() => {
-    // Function to handle navigation
-    const handleBackButton = () => {
-      useAppContext.updateState("layer", false);
-      navigate("/");
-    };
+    // browser back
+    window.addEventListener("popstate", closeButton);
 
-    // Add event listener for popstate event triggered by browser back and forward
-    window.addEventListener("popstate", handleBackButton);
-
-    // Cleanup listener when component unmounts
     return () => {
-      window.removeEventListener("popstate", handleBackButton);
+      window.removeEventListener("popstate", closeButton);
     };
-  }, [navigate]);
+  }, []);
 
   const closeButton = () => {
     useAppContext.updateState("layer", false);
