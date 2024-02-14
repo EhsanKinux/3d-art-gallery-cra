@@ -1,6 +1,7 @@
 export function mobileTouchHandling(camera, render, howMany, interactionManager, scrollPercent, squares, plane) {
   let startY = 0;
   let accumulatedY = 0;
+  const maxScroll = 100;
 
   // Ensure plane is defined and accessible here
   if (!plane || !plane.position) {
@@ -27,8 +28,18 @@ export function mobileTouchHandling(camera, render, howMany, interactionManager,
       startY = currentY;
       accumulatedY += deltaY;
 
-      // Simulate scroll based on touch movement
-      scrollPercent -= deltaY * touchSensitivity;
+      // Calculate new scroll percent based on touch movement
+      let newScrollPercent = scrollPercent - deltaY * touchSensitivity;
+
+      // Ensure newScrollPercent is within boundaries
+      if (newScrollPercent < 0) {
+        newScrollPercent = 0;
+      } else if (newScrollPercent > maxScroll) {
+        newScrollPercent = maxScroll;
+      }
+
+      // Apply the bounded newScrollPercent
+      scrollPercent = newScrollPercent;
 
       // Update the camera and scene based on the simulated scroll
       playScrollAnimation();
@@ -56,7 +67,7 @@ export function mobileTouchHandling(camera, render, howMany, interactionManager,
   function squareChecker(zCamera) {
     let minimalDistance = 1;
     squares.forEach((square) => {
-      const { x, y, z } = square?.position;
+      const { z } = square?.position;
       const deltaZ = zCamera - z;
       if (deltaZ <= minimalDistance && deltaZ > 0) {
         const diffZ = 2 * (minimalDistance - deltaZ);
