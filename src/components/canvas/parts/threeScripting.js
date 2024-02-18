@@ -109,7 +109,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
     let square = new Mesh(
       new PlaneGeometry(planeWidth, planeHeight, planeWidth, planeHeight),
       new MeshBasicMaterial({
-        map: loader.load(item.urls.regular),
+        map: loader.load(item.url),
       })
     );
     let xRandom = Math.round(Math.random());
