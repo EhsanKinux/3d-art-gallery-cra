@@ -11,7 +11,7 @@ export const mockData = [
     qrCodeLink: "https://drive.google.com/file/d/1QE6o7VhDo-PYkCcaK-fyePTUIU1LnmZu/view?usp=drive_link",
     picture: img.img1,
     width: 6000,
-    height: 7000,
+    height: 8000,
   },
   {
     id: 2,
@@ -110,7 +110,7 @@ export const mockData = [
     qrCodeLink: "https://drive.google.com/file/d/108ONUQJbxbMfegPkuwWqJGPz6hj21ZOe/view?usp=drive_link",
     picture: img.img10,
     width: 6000,
-    height: 11000,
+    height: 9000,
   },
   {
     id: 11,
@@ -121,7 +121,7 @@ export const mockData = [
     qrCodeLink: "https://drive.google.com/file/d/1zqwaSQcWJIFGK7qdrViuPIx3Jh3SsWYe/view?usp=drive_link",
     picture: img.img11,
     width: 6000,
-    height: 10000,
+    height: 9000,
   },
   {
     id: 12,
@@ -132,6 +132,6 @@ export const mockData = [
     qrCodeLink: "https://drive.google.com/file/d/1iCTRwiTdaDlXjY0QPFdBPvjg6CCqaw6_/view?usp=drive_link",
     picture: img.img12,
     width: 6000,
-    height: 10000,
+    height: 9000,
   },
 ];
