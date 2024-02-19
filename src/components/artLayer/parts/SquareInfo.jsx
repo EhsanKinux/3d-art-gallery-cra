@@ -51,7 +51,7 @@ function SquareInfo() {
                 {squareToShow.nftLink}
               </p> */}
               <ul className="grid grid-cols-2 md:grid-cols-2 gap-x-6 md:gap-x-16 content-center text-sm mt-10">
-                <li>Link: <a href={squareToShow.nftLink}>Click Here</a></li>
+                <li>Link: <a href={squareToShow.nftLink}>To See More Click Here</a></li>
                 {/* <li>Creation date: {squareToShow.created_at}</li> */}
                 {/* <li>Width: {squareToShow.width}</li> */}
                 {/* <li>Height: {squareToShow.height}</li> */}
