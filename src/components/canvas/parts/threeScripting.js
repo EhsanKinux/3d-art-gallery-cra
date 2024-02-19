@@ -22,7 +22,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   let fixedLayer = document.querySelector("#layer");
   let fixedPresentation = document.querySelector("#presentation");
   const progressBar = document.querySelector("#progress-bar");
-  const progressBarContainer = document.querySelector(".progress-bar-container");
+  // const progressBarContainer = document.querySelector(".progress-bar-container");
   let scrollPercent = 0;
   let zCamera;
   let scrolling = false;
@@ -31,7 +31,13 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   // Loading progress bar
   const manager = new LoadingManager();
   manager.onLoad = function () {
-    progressBarContainer.style.display = "none";
+    // Apply the fade-out animation class
+    fixedPresentation.classList.add("fade-out");
+
+    // Remove the presentation from display after animation
+    setTimeout(() => {
+      fixedPresentation.style.display = "none";
+    }, 4000);
   };
 
   manager.onProgress = function (url, itemsLoaded, itemsTotal) {
@@ -226,6 +232,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
     fixedCanvas.style.top = offset.y + "px";
     fixedLayer.style.top = offset.y + "px";
     fixedPresentation.style.top = offset.y + "px";
+    progressBar.style.top = offset.y + "px";
 
     savedScroll = scrollPercent;
   });
