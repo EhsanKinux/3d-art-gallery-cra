@@ -103,7 +103,7 @@ export function mobileTouchHandling(
 
   function playScrollAnimation() {
     camera.lookAt(plane.position);
-    camera.position.z = -scrollPercent / howMany;
+    camera.position.z = -scrollPercent / 2 / howMany;
     squareChecker(camera.position.z);
   }
 
