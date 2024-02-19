@@ -2,6 +2,7 @@ import { initScene } from "./parts/initScene";
 import Scrollbar from "smooth-scrollbar";
 import "../../../index.css";
 import { mobileTouchHandling } from "./parts/mobileTouchHandling";
+import { LoadingManager } from "three/src/loaders/LoadingManager";
 import { Scene } from "three/src/scenes/Scene";
 import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera";
 import { WebGLRenderer } from "three/src/renderers/WebGLRenderer";
@@ -13,17 +14,29 @@ import { InteractionManager } from "three.interactive";
 
 export function callThreeJS(useAppContext, howMany, navigation) {
   let damping;
-  if (window.innerWidth < 1000) damping = 0.05
-  else damping = 0.1
+  if (window.innerWidth < 1000) damping = 0.05;
+  else damping = 0.1;
 
   let fixedHeader = document.querySelector("#header");
   let fixedCanvas = document.querySelector("#three-canvas");
   let fixedLayer = document.querySelector("#layer");
   let fixedPresentation = document.querySelector("#presentation");
+  const progressBar = document.querySelector("#progress-bar");
+  const progressBarContainer = document.querySelector(".progress-bar-container");
   let scrollPercent = 0;
   let zCamera;
   let scrolling = false;
   let savedScroll = 0;
+
+  // Loading progress bar
+  const manager = new LoadingManager();
+  manager.onLoad = function () {
+    progressBarContainer.style.display = "none";
+  };
+
+  manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+    progressBar.value = (itemsLoaded / itemsTotal) * 100;
+  };
 
   // SMOOTHNESS
 
@@ -60,7 +73,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   // Textures
   const gridColor = "#00ff73";
   const howLong = howMany * 0.85;
-  const loader = new TextureLoader();
+  const loader = new TextureLoader(manager);
   const backPlaneDimension = 5;
   const littleSquares = backPlaneDimension * 2;
 
@@ -197,7 +210,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
     scrolling = true;
     // scroll calculation
     scrollPercent =
-      (scrollbar.offset.y / (scrollbar.size.content.height - document.documentElement.clientHeight)) * 100;
+      ((scrollbar.offset.y / (scrollbar.size.content.height - document.documentElement.clientHeight)) * 100) / 2;
     // console.log(scrollPercent);
     // Checking stopped scroll
     if (Math.abs(scrollPercent.toFixed(4) - savedScroll.toFixed(4)) <= 0.01) {
@@ -219,7 +232,18 @@ export function callThreeJS(useAppContext, howMany, navigation) {
 
   // Touch handling for mobile devices
   if (plane) {
-    mobileTouchHandling(camera, render, howMany, interactionManager, scrollPercent, squares, plane, useAppContext, navigation, scene);
+    mobileTouchHandling(
+      camera,
+      render,
+      howMany,
+      interactionManager,
+      scrollPercent,
+      squares,
+      plane,
+      useAppContext,
+      navigation,
+      scene
+    );
   }
 
   // Resizing
