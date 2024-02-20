@@ -11,6 +11,7 @@ import { Mesh } from "three/src/objects/Mesh";
 import { MeshBasicMaterial } from "three/src/materials/MeshBasicMaterial";
 import { PlaneGeometry } from "three/src/geometries/PlaneGeometry";
 import { InteractionManager } from "three.interactive";
+import { LinearFilter } from "three/src/constants";
 
 export function callThreeJS(useAppContext, howMany, navigation) {
   let damping;
@@ -63,7 +64,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
         setTimeout(() => {
           scrolling = false;
         }, 1000);
-      }, 7000);
+      }, 2000);
     }
   }
 
@@ -111,6 +112,15 @@ export function callThreeJS(useAppContext, howMany, navigation) {
     { treatTouchEventsAsMouseEvents: true },
   ]);
 
+  // Utility function to adjust texture properties
+  function configureTexture(texture) {
+    texture.minFilter = LinearFilter;
+    texture.magFilter = LinearFilter;
+    if (renderer) {
+      texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    }
+  }
+
   // ******* SQUARES
   let squares = [];
   let squarestStart = -1;
@@ -125,10 +135,11 @@ export function callThreeJS(useAppContext, howMany, navigation) {
       planeWidth = 1;
       planeHeight = 1 / aspect;
     }
+    const texture = loader.load(item.url, configureTexture);
     let square = new Mesh(
       new PlaneGeometry(planeWidth, planeHeight, planeWidth, planeHeight),
       new MeshBasicMaterial({
-        map: loader.load(item.url),
+        map: texture,
       })
     );
     let xRandom = Math.round(Math.random());
