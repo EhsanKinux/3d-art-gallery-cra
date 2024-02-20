@@ -27,7 +27,7 @@ export function mobileTouchHandling(
   }
 
   // touch sensitivity and the scale factor for touch-to-scroll translation
-  const touchSensitivity = 0.2;
+  const touchSensitivity = 0.05;
 
   document.addEventListener(
     "touchstart",
