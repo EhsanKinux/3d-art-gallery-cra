@@ -289,7 +289,11 @@ export function callThreeJS(useAppContext, howMany, navigation) {
       plane,
       useAppContext,
       navigation,
-      scene
+      scene,
+      initialBatchLoaded,
+      lastLoadedPlaneZ,
+      loadedPlanes,
+      loadPlaneBatches
     );
   }
 
