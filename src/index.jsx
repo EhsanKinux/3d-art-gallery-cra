@@ -5,6 +5,7 @@ import App from "./App";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import AppContext from "./context/AppContext";
 import Presentation from "./components/loading/Presentation";
+import Loading from "./components/loading/Loading";
 
 const router = createBrowserRouter([
   {
@@ -20,9 +21,10 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
-    <AppContext>
-      <Presentation />
-      <RouterProvider router={router} />
-    </AppContext>
+  <AppContext>
+    <Presentation />
+    <Loading />
+    <RouterProvider router={router} />
+  </AppContext>
   // </React.StrictMode>
 );
