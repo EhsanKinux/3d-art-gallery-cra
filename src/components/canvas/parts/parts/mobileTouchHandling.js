@@ -112,14 +112,14 @@ export function mobileTouchHandling(
 
     const loadThreshold = 0.5;
     if (!initialBatchLoaded || (camera.position.z <= lastLoadedPlaneZ + loadThreshold && loadedPlanes < array.length)) {
-      loadPlaneBatches();
+      loadPlaneBatches().then();
       initialBatchLoaded = true; // Mark the initial batch as loaded
     }
   }
 
   // Make sure the initial batch of planes is loaded when the application starts
   if (!initialBatchLoaded) {
-    loadPlaneBatches(); // This will load the first batch of planes
+    loadPlaneBatches().then(); // This will load the first batch of planes
     initialBatchLoaded = true; // Ensure we don't load it again unintentionally
   }
 

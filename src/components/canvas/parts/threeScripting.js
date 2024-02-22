@@ -23,8 +23,8 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   let fixedLayer = document.querySelector("#layer");
   let fixedPresentation = document.querySelector("#presentation");
   const progressBar = document.querySelector("#progress-bar");
+  const loading = document.querySelector("#loading");
   // let fixedFooter = document.querySelector("#footer");
-  // const progressBarContainer = document.querySelector(".progress-bar-container");
   let scrollPercent = 0;
   let zCamera;
   let scrolling = false;
@@ -130,60 +130,79 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   // ******* SQUARES
   let squares = [];
   function loadPlaneBatches() {
-    const batchStartIndex = loadedPlanes; // Start index for the new batch
-    const batchEndIndex = Math.min(batchStartIndex + planesPerBatch, array.length); // Ensure we do not exceed the array
-    let squarestStart = -1;
-    for (let i = batchStartIndex; i < batchEndIndex; i++) {
-      const item = array[i];
-      const aspect = item.width / item.height;
-      let planeWidth;
-      let planeHeight;
-      if (aspect >= 1) {
-        planeHeight = 1;
-        planeWidth = aspect;
-      } else {
-        planeWidth = 1;
-        planeHeight = 1 / aspect;
+    // Show the loading indicator
+    loading.style.display = "block";
+
+    return new Promise((resolve) => {
+      const batchStartIndex = loadedPlanes; // Start index for the new batch
+      const batchEndIndex = Math.min(batchStartIndex + planesPerBatch, array.length); // Ensure we do not exceed the array
+      let squarestStart = -1;
+      for (let i = batchStartIndex; i < batchEndIndex; i++) {
+        const item = array[i];
+        const aspect = item.width / item.height;
+        let planeWidth;
+        let planeHeight;
+        if (aspect >= 1) {
+          planeHeight = 1;
+          planeWidth = aspect;
+        } else {
+          planeWidth = 1;
+          planeHeight = 1 / aspect;
+        }
+        const texture = loader.load(item.url, configureTexture);
+        let square = new Mesh(
+          new PlaneGeometry(planeWidth, planeHeight, planeWidth, planeHeight),
+          new MeshBasicMaterial({
+            map: texture,
+          })
+        );
+        let xRandom = Math.round(Math.random());
+        let yRandom = Math.round(Math.random());
+        let randomMath = [Math.random() / 3, -Math.random() / 3];
+        const yPosition = randomMath[xRandom];
+        const xPosition = randomMath[yRandom];
+        const zPosition = (-1 * i) / 5 + squarestStart;
+
+        // Update 'lastLoadedPlaneZ' with the Z position of the newest loaded plane
+        lastLoadedPlaneZ = zPosition;
+
+        square.position.set(xPosition, yPosition, zPosition);
+        squares.push({
+          ...square,
+          ...{ initX: square.position.x, initY: square.position.y, initZ: square.position.z },
+        });
+        scene.add(square);
+        interactionManager.add(square);
+        square.addEventListener("click", (e) => {
+          e.stopPropagation();
+          useAppContext.updateState("layer", true);
+          navigation(`/${item.id}`);
+        });
+        square.addEventListener("mouseover", () => {
+          document.body.style.cursor = "pointer";
+        });
+        square.addEventListener("mouseout", () => {
+          document.body.style.cursor = "default";
+        });
+        square.addEventListener("touchstart", (e) => {
+          e.stopPropagation();
+          useAppContext.updateState("layer", true);
+          navigation(`/${item.id}`);
+        });
+        loadedPlanes++; // Increment the count of loaded planes
       }
-      const texture = loader.load(item.url, configureTexture);
-      let square = new Mesh(
-        new PlaneGeometry(planeWidth, planeHeight, planeWidth, planeHeight),
-        new MeshBasicMaterial({
-          map: texture,
-        })
-      );
-      let xRandom = Math.round(Math.random());
-      let yRandom = Math.round(Math.random());
-      let randomMath = [Math.random() / 3, -Math.random() / 3];
-      const yPosition = randomMath[xRandom];
-      const xPosition = randomMath[yRandom];
-      const zPosition = (-1 * i) / 5 + squarestStart;
-
-      // Update 'lastLoadedPlaneZ' with the Z position of the newest loaded plane
-      lastLoadedPlaneZ = zPosition;
-
-      square.position.set(xPosition, yPosition, zPosition);
-      squares.push({ ...square, ...{ initX: square.position.x, initY: square.position.y, initZ: square.position.z } });
-      scene.add(square);
-      interactionManager.add(square);
-      square.addEventListener("click", (e) => {
-        e.stopPropagation();
-        useAppContext.updateState("layer", true);
-        navigation(`/${item.id}`);
+      // Resolve the promise immediately after loading the batch
+      resolve();
+    }).then(() => {
+      // Ensure the loading indicator is displayed for a minimum amount of time
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          // Hide the loading indicator after the timeout
+          loading.style.display = "none";
+          resolve();
+        }, 500); // Minimum display time of 500ms
       });
-      square.addEventListener("mouseover", () => {
-        document.body.style.cursor = "pointer";
-      });
-      square.addEventListener("mouseout", () => {
-        document.body.style.cursor = "default";
-      });
-      square.addEventListener("touchstart", (e) => {
-        e.stopPropagation();
-        useAppContext.updateState("layer", true);
-        navigation(`/${item.id}`);
-      });
-      loadedPlanes++; // Increment the count of loaded planes
-    }
+    });
   }
 
   // Camera Position
@@ -225,14 +244,14 @@ export function callThreeJS(useAppContext, howMany, navigation) {
 
     const loadThreshold = 0.5;
     if (!initialBatchLoaded || (camera.position.z <= lastLoadedPlaneZ + loadThreshold && loadedPlanes < array.length)) {
-      loadPlaneBatches();
+      loadPlaneBatches().then();
       initialBatchLoaded = true; // Mark the initial batch as loaded
     }
   }
 
   // Make sure the initial batch of planes is loaded when the application starts
   if (!initialBatchLoaded) {
-    loadPlaneBatches(); // This will load the first batch of planes
+    loadPlaneBatches().then(); // This will load the first batch of planes
     initialBatchLoaded = true; // Ensure we don't load it again unintentionally
   }
 
@@ -272,6 +291,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
     fixedLayer.style.top = offset.y + "px";
     fixedPresentation.style.top = offset.y + "px";
     progressBar.style.top = offset.y + "px";
+    loading.style.top = offset.y + "px";
     // fixedFooter.style.top = offset.y + "px";
 
     savedScroll = scrollPercent;
