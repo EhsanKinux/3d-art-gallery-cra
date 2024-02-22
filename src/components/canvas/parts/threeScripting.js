@@ -1,5 +1,4 @@
 import { initScene } from "./parts/initScene";
-import Scrollbar from "smooth-scrollbar";
 import "../../../index.css";
 import { mobileTouchHandling } from "./parts/mobileTouchHandling";
 import { LoadingManager } from "three/src/loaders/LoadingManager";
@@ -12,6 +11,9 @@ import { MeshBasicMaterial } from "three/src/materials/MeshBasicMaterial";
 import { PlaneGeometry } from "three/src/geometries/PlaneGeometry";
 import { InteractionManager } from "three.interactive";
 import { LinearFilter } from "three/src/constants";
+import { Vector3 } from "three/src/math/Vector3";
+import { createPlane, generatePlaneConfigs } from "./parts/planeConfiguration";
+import { setupInitialScroll, setupScrollbar } from "./parts/scrollbarSetup";
 
 export function callThreeJS(useAppContext, howMany, navigation) {
   let damping;
@@ -52,27 +54,10 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   };
 
   // SMOOTHNESS
-
   let scrollbar = setupScrollbar(damping);
-  function setupScrollbar(damping) {
-    let scrollbar = Scrollbar.init(document.body, { renderByPixels: true, continuousScrolling: true, damping });
-    // Limiting x scrolling
-    scrollbar.limit.x = 0;
-    return scrollbar;
-  }
 
   // First scroll to start the app
-  setupInitialScroll(useAppContext, scrollbar);
-  function setupInitialScroll(useAppContext, scrollbar) {
-    if (useAppContext.state.data.length > 0) {
-      setTimeout(() => {
-        scrollbar.scrollTo(0, 5, 10);
-        setTimeout(() => {
-          scrolling = false;
-        }, 1000);
-      }, 2000);
-    }
-  }
+  setupInitialScroll(useAppContext, scrollbar, scrolling);
 
   // initialize the scene
   const { scene, camera, renderer } = initScene(Scene, PerspectiveCamera, WebGLRenderer);
@@ -84,34 +69,12 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   // *********** ROOM
 
   // Textures
-  const gridColor = "#00ff73";
-  const howLong = howMany * 0.85;
   const loader = new TextureLoader(manager);
-  const backPlaneDimension = 5;
-  const littleSquares = backPlaneDimension * 2;
 
-  const plane = new Mesh(
-    new PlaneGeometry(backPlaneDimension, backPlaneDimension, littleSquares, littleSquares),
-    new MeshBasicMaterial({ color: gridColor, wireframe: true })
-  );
-  const rightPlane = new Mesh(
-    new PlaneGeometry(howLong, 5, howLong * 2, littleSquares),
-    new MeshBasicMaterial({ color: gridColor, wireframe: true })
-  );
-  const leftPlane = new Mesh(
-    new PlaneGeometry(howLong, 5, howLong * 2, littleSquares),
-    new MeshBasicMaterial({ color: gridColor, wireframe: true })
-  );
-  const topPlane = new Mesh(
-    new PlaneGeometry(howLong, 5, howLong * 2, littleSquares),
-    new MeshBasicMaterial({ color: gridColor, wireframe: true })
-  );
-  const bottomPlane = new Mesh(
-    new PlaneGeometry(howLong, 5, howLong * 2, littleSquares),
-    new MeshBasicMaterial({ color: gridColor, wireframe: true })
-  );
-
-  scene.add(plane, rightPlane, leftPlane, topPlane, bottomPlane);
+  // Creating and adding planes to the scene
+  const planeConfigs = generatePlaneConfigs(howMany);
+  const planes = planeConfigs.map((config) => createPlane(config));
+  planes.forEach((plane) => scene.add(plane));
 
   // ** Three Interactive
   const interactionManager = new InteractionManager(renderer, camera, renderer.domElement, [
@@ -200,30 +163,14 @@ export function callThreeJS(useAppContext, howMany, navigation) {
           // Hide the loading indicator after the timeout
           loading.style.display = "none";
           resolve();
-        }, 500); // Minimum display time of 500ms
+        }, 5000); // Minimum display time of 500ms
       });
     });
   }
 
   // Camera Position
   camera.position.set(0, 0, 0);
-  camera.lookAt(plane.position);
-  // First plane position
-  plane.position.set(0, 0, -howLong / 2);
-  // Right plane position
-  rightPlane.position.set(2.5, 0, 0);
-  rightPlane.rotation.y = -90 * ((2 * Math.PI) / 360);
-  // Left plane position
-  leftPlane.position.set(-2.5, 0, 0);
-  leftPlane.rotation.y = 90 * ((2 * Math.PI) / 360);
-  // Top plane position
-  topPlane.position.set(0, 2.5, 0);
-  topPlane.rotation.x = 90 * ((2 * Math.PI) / 360);
-  topPlane.rotation.z = 90 * ((2 * Math.PI) / 360);
-  // Bottom plane position
-  bottomPlane.position.set(0, -2.5, 0);
-  bottomPlane.rotation.x = 90 * ((2 * Math.PI) / 360);
-  bottomPlane.rotation.z = 90 * ((2 * Math.PI) / 360);
+  camera.lookAt(new Vector3(...planeConfigs[0].position));
 
   // Animate function
   render();
@@ -236,7 +183,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   animate();
 
   function playScrollAnimation() {
-    camera.lookAt(plane.position);
+    camera.lookAt(new Vector3(...planeConfigs[0].position));
     camera.position.z = -scrollPercent / howMany;
     // Check if it's time to load more planes
     zCamera = camera.position.z;
@@ -298,7 +245,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   });
 
   // Touch handling for mobile devices
-  if (plane) {
+  if (planeConfigs) {
     mobileTouchHandling(
       camera,
       render,
@@ -306,7 +253,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
       interactionManager,
       scrollPercent,
       squares,
-      plane,
+      planeConfigs,
       useAppContext,
       navigation,
       scene,
