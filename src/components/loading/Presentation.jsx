@@ -8,6 +8,7 @@ function Presentation() {
         Loading assets please wait...
       </label>
       <progress id="progress-bar" className="progress progress-accent w-56" value="0" max="100"></progress>
+      <div className="text-white text-center mt-4">Pictures will load progressively in sets of 4.</div>
       <div className="flex flex-col items-center gap-y-5 md:gap-y-10 w-screen md:w-fit">
         <div
           id="presentation-content"
