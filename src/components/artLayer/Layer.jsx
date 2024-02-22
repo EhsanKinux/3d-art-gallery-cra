@@ -59,7 +59,6 @@ function Layer() {
         <Routes>
           <Route path="/*" element={<SquareInfo />} />
         </Routes>
-        {/* <SquareInfo /> */}
       </div>
     </div>
   );
