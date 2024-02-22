@@ -12,30 +12,30 @@ function Menu() {
       <h3 className="text-left w-full">THE NEXT 100 YEARS</h3>
       <ul className="text-white flex flex-col items-start w-full">
         <li>
-          <a>ARTISTS</a>
+          <a href="." className="link">ARTISTS</a>
         </li>
         <li>
-          <a>FAQ</a>
+          <a href="." className="link">FAQ</a>
         </li>
         <li>
-          <a>TIPS</a>
+          <a href="." className="link">TIPS</a>
         </li>
         <li>
-          <a>ABOUT THIS</a>
+          <a href="." className="link">ABOUT THIS</a>
         </li>
       </ul>
       <ul className="text-gray-500 flex flex-col items-start w-full">
         <li>
-          <a>JOIN US</a>
+          <a href="." className="link">JOIN US</a>
         </li>
         <li>
-          <a>VISIT US</a>
+          <a href="." className="link">VISIT US</a>
         </li>
         <li>
-          <a>TERMS OF SERVICE</a>
+          <a href="." className="link">TERMS OF SERVICE</a>
         </li>
         <li>
-          <a>PRIVACY POLICY</a>
+          <a href="." className="link">PRIVACY POLICY</a>
         </li>
       </ul>
       <div className="w-full">
