@@ -1,5 +1,6 @@
 import { Vector2 } from "three/src/math/Vector2";
 import { Raycaster } from "three/src/core/Raycaster";
+import { Vector3 } from "three/src/math/Vector3";
 
 export function mobileTouchHandling(
   camera,
@@ -8,7 +9,7 @@ export function mobileTouchHandling(
   interactionManager,
   scrollPercent,
   squares,
-  plane,
+  planeConfigs,
   useAppContext,
   navigation,
   scene,
@@ -25,10 +26,10 @@ export function mobileTouchHandling(
   const maxScroll = 100;
 
   // Ensure plane is defined and accessible here
-  if (!plane || !plane.position) {
-    console.error("Plane is not defined or does not have a position.");
-    return;
-  }
+  // if (!plane || !plane.position) {
+  //   console.error("Plane is not defined or does not have a position.");
+  //   return;
+  // }
 
   // touch sensitivity and the scale factor for touch-to-scroll translation
   const touchSensitivity = 0.05;
@@ -106,7 +107,7 @@ export function mobileTouchHandling(
   // });
 
   function playScrollAnimation() {
-    camera.lookAt(plane.position);
+    camera.lookAt(new Vector3(...planeConfigs[0].position));
     camera.position.z = -scrollPercent / 2 / howMany;
     squareChecker(camera.position.z);
 
