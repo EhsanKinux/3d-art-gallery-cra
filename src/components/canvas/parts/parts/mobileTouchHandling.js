@@ -77,14 +77,26 @@ export function mobileTouchHandling(
       let newScrollPercent = scrollPercent - deltaY * touchSensitivity;
 
       // Ensure newScrollPercent is within boundaries
-      if (newScrollPercent < 0) {
-        newScrollPercent = 0;
-      } else if (newScrollPercent > maxScroll) {
-        newScrollPercent = maxScroll;
-      }
+      // if (newScrollPercent < 0) {
+      //   newScrollPercent = 0;
+      // } else if (newScrollPercent > maxScroll) {
+      //   newScrollPercent = maxScroll;
+      // }
+
+      // Ensure newScrollPercent is within boundaries
+      newScrollPercent = Math.max(0, Math.min(newScrollPercent, maxScroll));
 
       // Apply the bounded newScrollPercent
       scrollPercent = newScrollPercent;
+
+      const loadThreshold = 0.5;
+      if (
+        !initialBatchLoaded ||
+        (camera.position.z <= lastLoadedPlaneZ + loadThreshold && loadedPlanes < array.length)
+      ) {
+        loadPlaneBatches().then();
+        initialBatchLoaded = true; // Mark the initial batch as loaded
+      }
 
       // Update the camera and scene based on the simulated scroll
       render();
@@ -99,40 +111,68 @@ export function mobileTouchHandling(
     { passive: false }
   );
 
-  // document.addEventListener("touchend", function () {
-  //   if (accumulatedY !== 0) {
-  //     accumulatedY = 0; // Resetting accumulatedY after the touch ends
-  //   }
-  //   interactionManager.update();
-  // });
+  document.addEventListener("touchend", function () {
+    if (accumulatedY !== 0) {
+      accumulatedY = 0; // Resetting accumulatedY after the touch ends
+    }
+    interactionManager.update();
+  });
 
   function playScrollAnimation() {
     camera.lookAt(new Vector3(...planeConfigs[0].position));
     camera.position.z = -scrollPercent / 2 / howMany;
     squareChecker(camera.position.z);
 
-    const loadThreshold = 0.5;
-    if (!initialBatchLoaded || (camera.position.z <= lastLoadedPlaneZ + loadThreshold && loadedPlanes < array.length)) {
-      loadPlaneBatches().then();
-      initialBatchLoaded = true; // Mark the initial batch as loaded
-    }
+    // const loadThreshold = 0.5;
+    // if (!initialBatchLoaded || (camera.position.z <= lastLoadedPlaneZ + loadThreshold && loadedPlanes < array.length)) {
+    //   loadPlaneBatches().then();
+    //   initialBatchLoaded = true; // Mark the initial batch as loaded
+    // }
   }
 
   // Make sure the initial batch of planes is loaded when the application starts
-  if (!initialBatchLoaded) {
-    loadPlaneBatches().then(); // This will load the first batch of planes
-    initialBatchLoaded = true; // Ensure we don't load it again unintentionally
-  }
+  // if (!initialBatchLoaded) {
+  //   loadPlaneBatches().then(); // This will load the first batch of planes
+  //   initialBatchLoaded = true; // Ensure we don't load it again unintentionally
+  // }
 
   function squareChecker(zCamera) {
     let minimalDistance = 1;
-    squares.forEach((square) => {
-      const { z } = square?.position;
+    squares.forEach((square, index) => {
+      const { z } = square.position;
       const deltaZ = zCamera - z;
       if (deltaZ <= minimalDistance && deltaZ > 0) {
         const diffZ = 2 * (minimalDistance - deltaZ);
-        square.position.x = square.initX >= 0 ? square.initX + diffZ : square.initX - diffZ;
-        square.position.y = square.initY >= 0 ? square.initY + diffZ : square.initY - diffZ;
+        // Determine the corner for this square
+        const corner = index % 4; // This will give us a value from 0 to 3
+        let targetX, targetY;
+        switch (corner) {
+          case 0: // Top-left
+            targetX = square.initX - diffZ;
+            targetY = square.initY + diffZ;
+            break;
+          case 1: // Top-right
+            targetX = square.initX + diffZ;
+            targetY = square.initY + diffZ;
+            break;
+          case 2: // Bottom-left
+            targetX = square.initX - diffZ;
+            targetY = square.initY - diffZ;
+            break;
+          case 3: // Bottom-right
+            targetX = square.initX + diffZ;
+            targetY = square.initY - diffZ;
+            break;
+          default:
+            targetX = square.initX;
+            targetY = square.initY;
+            console.warn(`Unexpected corner value: ${corner}. Resetting square to initial position.`);
+            break;
+        }
+
+        // Apply the calculated target positions
+        square.position.x = targetX;
+        square.position.y = targetY;
       }
     });
   }
