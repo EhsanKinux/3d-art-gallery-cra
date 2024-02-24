@@ -96,10 +96,12 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   async function loadPlaneBatches() {
     // Show the loading indicator
     loading.style.display = "block";
+    document.body.classList.add("no-scroll");
+
+    const batchStartIndex = loadedPlanes; // Start index for the new batch
+    const batchEndIndex = Math.min(batchStartIndex + planesPerBatch, array.length); // Ensure we do not exceed the array
 
     return new Promise((resolve) => {
-      const batchStartIndex = loadedPlanes; // Start index for the new batch
-      const batchEndIndex = Math.min(batchStartIndex + planesPerBatch, array.length); // Ensure we do not exceed the array
       let squarestStart = -1;
       for (let i = batchStartIndex; i < batchEndIndex; i++) {
         const item = array[i];
@@ -113,10 +115,14 @@ export function callThreeJS(useAppContext, howMany, navigation) {
           planeWidth = 1;
           planeHeight = 1 / aspect;
         }
-        const texture = loader.load(item.url, (texture) => {
-          configureTexture(texture);
-          // Update UI or plane visibility here if necessary
-        });
+        const texture = loader.load(
+          item.url,
+          (texture) => {
+            configureTexture(texture);
+          },
+          manager.onProgress,
+          manager.onError
+        );
         let square = new Mesh(
           new PlaneGeometry(planeWidth, planeHeight, planeWidth, planeHeight),
           new MeshBasicMaterial({
@@ -166,8 +172,9 @@ export function callThreeJS(useAppContext, howMany, navigation) {
         setTimeout(() => {
           // Hide the loading indicator after the timeout
           loading.style.display = "none";
+          document.body.classList.remove("no-scroll");
           resolve(loading);
-        }, 5000); // Minimum display time of 500ms
+        }, 4000); // Minimum display time of 500ms
       });
     });
   }
