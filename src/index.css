@@ -4,11 +4,7 @@
 
 :root {
   --animation-perspective: 200px;
-  --accent-gradient: linear-gradient(
-    45deg,
-    rgb(0, 255, 225), 
-    rgb(0, 255, 94)
-  );
+  --accent-gradient: linear-gradient(45deg, rgb(0, 255, 225), rgb(0, 255, 94));
 }
 
 html {
@@ -45,24 +41,30 @@ body {
   height: 84px;
   position: relative;
 }
-.loader:before , .loader:after {
+.loader:before,
+.loader:after {
   content: "";
   position: absolute;
   left: 50%;
   bottom: 0;
-  width:64px;
+  width: 64px;
   height: 64px;
   border-radius: 50%;
-  background:#FFF;
-  transform: translate(-50% , -100%)  scale(0);
+  background: #fff;
+  transform: translate(-50%, -100%) scale(0);
   animation: push 2s infinite linear;
 }
 .loader:after {
   animation-delay: 1s;
 }
 @keyframes push {
-    0% , 50%{ transform: translate(-50% , 0%)  scale(1) }
-  100% { transform: translate(-50%, -100%) scale(0) }
+  0%,
+  50% {
+    transform: translate(-50%, 0%) scale(1);
+  }
+  100% {
+    transform: translate(-50%, -100%) scale(0);
+  }
 }
 
 .loaderPresentation {
@@ -74,7 +76,7 @@ body {
   overflow: hidden;
 }
 .loaderPresentation::after {
-  content: '';
+  content: "";
   width: 192px;
   height: 4.8px;
   background: black;
@@ -97,10 +99,10 @@ body {
 }
 
 .logo {
-  font-family: 'Comfortaa', cursive;
+  font-family: "Comfortaa", cursive;
 }
 .richi-logo {
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
 }
 
 #logo-header {
@@ -108,14 +110,32 @@ body {
   animation: logoRotation 6s linear infinite;
 }
 @keyframes logoRotation {
-  0% {transform: perspective(var(--animation-perspective)) rotate3d(1,0,0,0deg);}
-  35% {transform: perspective(var(--animation-perspective)) rotate3d(1,0,0,0deg);}
-  40% {transform: perspective(var(--animation-perspective)) rotate3d(1,0,0,-90deg); opacity: 1;}
-  41% {opacity: 0; }
-  59% {opacity: 0; }
-  60% {transform: perspective(var(--animation-perspective)) rotate3d(1,0,0,-90deg); opacity: 1;}
-  65% {transform: perspective(var(--animation-perspective)) rotate3d(1,0,0,0deg);}
-  100% {transform: perspective(var(--animation-perspective)) rotate3d(1,0,0,0deg);}
+  0% {
+    transform: perspective(var(--animation-perspective)) rotate3d(1, 0, 0, 0deg);
+  }
+  35% {
+    transform: perspective(var(--animation-perspective)) rotate3d(1, 0, 0, 0deg);
+  }
+  40% {
+    transform: perspective(var(--animation-perspective)) rotate3d(1, 0, 0, -90deg);
+    opacity: 1;
+  }
+  41% {
+    opacity: 0;
+  }
+  59% {
+    opacity: 0;
+  }
+  60% {
+    transform: perspective(var(--animation-perspective)) rotate3d(1, 0, 0, -90deg);
+    opacity: 1;
+  }
+  65% {
+    transform: perspective(var(--animation-perspective)) rotate3d(1, 0, 0, 0deg);
+  }
+  100% {
+    transform: perspective(var(--animation-perspective)) rotate3d(1, 0, 0, 0deg);
+  }
 }
 
 #richi-header {
@@ -123,12 +143,30 @@ body {
   animation: richiRotation 6s linear infinite;
 }
 @keyframes richiRotation {
-  0% {transform: perspective(var(--animation-perspective)) rotate3d(1,0,0,90deg); opacity: 0;}
-  35% {transform: perspective(var(--animation-perspective)) rotate3d(1,0,0,90deg); opacity: 0;}
-  40% {transform: perspective(var(--animation-perspective)) rotate3d(1,0,0,0deg); opacity: 1;}
-  60% {transform: perspective(var(--animation-perspective)) rotate3d(1,0,0,0deg); opacity: 1;}
-  65% {transform: perspective(var(--animation-perspective)) rotate3d(1,0,0,90deg); opacity: 0;}
-  100% {transform: perspective(var(--animation-perspective)) rotate3d(1,0,0,90deg); opacity: 0;}
+  0% {
+    transform: perspective(var(--animation-perspective)) rotate3d(1, 0, 0, 90deg);
+    opacity: 0;
+  }
+  35% {
+    transform: perspective(var(--animation-perspective)) rotate3d(1, 0, 0, 90deg);
+    opacity: 0;
+  }
+  40% {
+    transform: perspective(var(--animation-perspective)) rotate3d(1, 0, 0, 0deg);
+    opacity: 1;
+  }
+  60% {
+    transform: perspective(var(--animation-perspective)) rotate3d(1, 0, 0, 0deg);
+    opacity: 1;
+  }
+  65% {
+    transform: perspective(var(--animation-perspective)) rotate3d(1, 0, 0, 90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(var(--animation-perspective)) rotate3d(1, 0, 0, 90deg);
+    opacity: 0;
+  }
 }
 
 .text-gradient {
@@ -169,6 +207,9 @@ body {
   width: 30%;
   margin-top: 0.5%;
   height: 2%;
+  background: #23f33b;
+  box-shadow: 0 0 40px #23f388;
+  transition: 0.4s linear;
 }
 
 #progress-bar label {
