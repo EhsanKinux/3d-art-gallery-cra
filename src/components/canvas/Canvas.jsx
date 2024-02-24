@@ -21,7 +21,7 @@ function Canvas() {
         })
         .catch((error) => console.error("Failed to load the threeScripting module", error));
     }
-  }, [useAppContext.state.data[0]]);
+  }, []);
 
   return (
     <div id="three-canvas" className="w-fit h-fit fixed top-0 left-0 bg-black">
