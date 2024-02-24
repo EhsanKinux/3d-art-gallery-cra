@@ -4,11 +4,11 @@ const Loading = () => {
   return (
     <div
       id="loading"
-      className={`fixed w-screen h-screen flex flex-col items-center justify-center z-[99] bg-black gap-6 opacity-55`}
+      className={`fixed w-screen h-screen flex flex-col items-center justify-center z-[99] bg-black gap-6 opacity-50`}
     >
       <div className="w-screen h-screen flex items-center justify-center gap-2">
-        <span className="badge badge-warning gap-6">LOADING PICTURES...</span>
-        <span className="font-bold loading loading-spinner text-warning loading-lg"></span>
+        <span className="text-lg font-bold text-white gap-6">LOADING PICTURES...</span>
+        {/* <span className="font-bold loading loading-spinner text-warning loading-lg"></span> */}
       </div>
     </div>
   );

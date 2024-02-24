@@ -27,7 +27,7 @@ function SquareInfo() {
         <div>Loading...</div>
       ) : data.length < 1 ? null : squareToShow ? (
         <>
-          <div id="square-picture" className="skeleton w-full md:w-1/2 h-1/3 md:h-full bg-black">
+          <div id="square-picture" className="w-full md:w-1/2 h-1/3 md:h-full bg-black">
             <img className=" w-full h-full object-cover" src={squareToShow.url} alt="imgg" />
           </div>
           <div
@@ -46,7 +46,7 @@ function SquareInfo() {
               <ul className="grid grid-cols-2 md:grid-cols-2 gap-x-6 md:gap-x-16 content-center text-sm mt-10">
                 <li>
                   Link:{" "}
-                  <a href={squareToShow.nftLink} className="link link-error">
+                  <a href={squareToShow.nftLink} className="text-red-600 underline hover:cursor-pointer">
                     To See More Click Here
                   </a>
                 </li>
