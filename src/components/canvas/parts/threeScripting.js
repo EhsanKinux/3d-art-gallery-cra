@@ -14,6 +14,7 @@ import { InteractionManager } from "three.interactive";
 import { Vector3 } from "three/src/math/Vector3";
 import { createPlane, generatePlaneConfigs } from "./parts/planeConfiguration";
 import { setupInitialScroll, setupScrollbar } from "./parts/scrollbarSetup";
+import { squareChecker } from "./parts/squareMovementPosition";
 
 export function callThreeJS(useAppContext, howMany, navigation) {
   let damping;
@@ -92,7 +93,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
 
   // ******* SQUARES
   let squares = [];
-  function loadPlaneBatches() {
+  async function loadPlaneBatches() {
     // Show the loading indicator
     loading.style.display = "block";
 
@@ -165,7 +166,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
         setTimeout(() => {
           // Hide the loading indicator after the timeout
           loading.style.display = "none";
-          resolve();
+          resolve(loading);
         }, 5000); // Minimum display time of 500ms
       });
     });
@@ -190,7 +191,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
     camera.position.z = -scrollPercent / howMany;
     // Check if it's time to load more planes
     zCamera = camera.position.z;
-    squareChecker(zCamera);
+    squareChecker(zCamera, squares);
 
     const loadThreshold = 0.5;
     if (!initialBatchLoaded || (camera.position.z <= lastLoadedPlaneZ + loadThreshold && loadedPlanes < array.length)) {
@@ -203,47 +204,6 @@ export function callThreeJS(useAppContext, howMany, navigation) {
   if (!initialBatchLoaded) {
     loadPlaneBatches().then(); // This will load the first batch of planes
     initialBatchLoaded = true; // Ensure we don't load it again unintentionally
-  }
-
-  function squareChecker(zCamera) {
-    let minimalDistance = 1;
-    squares.forEach((square, index) => {
-      const { z } = square.position;
-      const deltaZ = zCamera - z;
-      if (deltaZ <= minimalDistance && deltaZ > 0) {
-        const diffZ = 2 * (minimalDistance - deltaZ);
-        // Determine the corner for this square
-        const corner = index % 4; // This will give us a value from 0 to 3
-        let targetX, targetY;
-        switch (corner) {
-          case 0: // Top-left
-            targetX = square.initX - diffZ;
-            targetY = square.initY + diffZ;
-            break;
-          case 1: // Top-right
-            targetX = square.initX + diffZ;
-            targetY = square.initY + diffZ;
-            break;
-          case 2: // Bottom-left
-            targetX = square.initX - diffZ;
-            targetY = square.initY - diffZ;
-            break;
-          case 3: // Bottom-right
-            targetX = square.initX + diffZ;
-            targetY = square.initY - diffZ;
-            break;
-          default:
-            targetX = square.initX;
-            targetY = square.initY;
-            console.warn(`Unexpected corner value: ${corner}. Resetting square to initial position.`);
-            break;
-        }
-
-        // Apply the calculated target positions
-        square.position.x = targetX;
-        square.position.y = targetY;
-      }
-    });
   }
 
   // scrollPercent updater based on scrolling
