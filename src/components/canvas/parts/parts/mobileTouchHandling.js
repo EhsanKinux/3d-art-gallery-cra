@@ -1,6 +1,7 @@
 import { Vector2 } from "three/src/math/Vector2";
 import { Raycaster } from "three/src/core/Raycaster";
 import { Vector3 } from "three/src/math/Vector3";
+import { squareChecker } from "./squareMovementPosition";
 
 export function mobileTouchHandling(
   camera,
@@ -89,15 +90,6 @@ export function mobileTouchHandling(
       // Apply the bounded newScrollPercent
       scrollPercent = newScrollPercent;
 
-      const loadThreshold = 0.5;
-      if (
-        !initialBatchLoaded ||
-        (camera.position.z <= lastLoadedPlaneZ + loadThreshold && loadedPlanes < array.length)
-      ) {
-        loadPlaneBatches().then();
-        initialBatchLoaded = true; // Mark the initial batch as loaded
-      }
-
       // Update the camera and scene based on the simulated scroll
       render();
       function animate() {
@@ -121,59 +113,18 @@ export function mobileTouchHandling(
   function playScrollAnimation() {
     camera.lookAt(new Vector3(...planeConfigs[0].position));
     camera.position.z = -scrollPercent / 2 / howMany;
-    squareChecker(camera.position.z);
+    squareChecker(camera.position.z, squares);
 
-    // const loadThreshold = 0.5;
-    // if (!initialBatchLoaded || (camera.position.z <= lastLoadedPlaneZ + loadThreshold && loadedPlanes < array.length)) {
-    //   loadPlaneBatches().then();
-    //   initialBatchLoaded = true; // Mark the initial batch as loaded
-    // }
+    const loadThreshold = 0.5;
+    if (!initialBatchLoaded || (camera.position.z <= lastLoadedPlaneZ + loadThreshold && loadedPlanes < array.length)) {
+      loadPlaneBatches().then();
+      initialBatchLoaded = true; // Mark the initial batch as loaded
+    }
   }
 
   // Make sure the initial batch of planes is loaded when the application starts
-  // if (!initialBatchLoaded) {
-  //   loadPlaneBatches().then(); // This will load the first batch of planes
-  //   initialBatchLoaded = true; // Ensure we don't load it again unintentionally
-  // }
-
-  function squareChecker(zCamera) {
-    let minimalDistance = 1;
-    squares.forEach((square, index) => {
-      const { z } = square.position;
-      const deltaZ = zCamera - z;
-      if (deltaZ <= minimalDistance && deltaZ > 0) {
-        const diffZ = 2 * (minimalDistance - deltaZ);
-        // Determine the corner for this square
-        const corner = index % 4; // This will give us a value from 0 to 3
-        let targetX, targetY;
-        switch (corner) {
-          case 0: // Top-left
-            targetX = square.initX - diffZ;
-            targetY = square.initY + diffZ;
-            break;
-          case 1: // Top-right
-            targetX = square.initX + diffZ;
-            targetY = square.initY + diffZ;
-            break;
-          case 2: // Bottom-left
-            targetX = square.initX - diffZ;
-            targetY = square.initY - diffZ;
-            break;
-          case 3: // Bottom-right
-            targetX = square.initX + diffZ;
-            targetY = square.initY - diffZ;
-            break;
-          default:
-            targetX = square.initX;
-            targetY = square.initY;
-            console.warn(`Unexpected corner value: ${corner}. Resetting square to initial position.`);
-            break;
-        }
-
-        // Apply the calculated target positions
-        square.position.x = targetX;
-        square.position.y = targetY;
-      }
-    });
+  if (!initialBatchLoaded) {
+    loadPlaneBatches().then(); // This will load the first batch of planes
+    initialBatchLoaded = false; // Ensure we don't load it again unintentionally
   }
 }
