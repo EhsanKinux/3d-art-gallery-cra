@@ -10,7 +10,7 @@ import { Mesh } from "three/src/objects/Mesh";
 import { MeshBasicMaterial } from "three/src/materials/MeshBasicMaterial";
 import { PlaneGeometry } from "three/src/geometries/PlaneGeometry";
 import { InteractionManager } from "three.interactive";
-import { LinearFilter } from "three/src/constants";
+// import { LinearFilter } from "three/src/constants";
 import { Vector3 } from "three/src/math/Vector3";
 import { createPlane, generatePlaneConfigs } from "./parts/planeConfiguration";
 import { setupInitialScroll, setupScrollbar } from "./parts/scrollbarSetup";
@@ -83,10 +83,10 @@ export function callThreeJS(useAppContext, howMany, navigation) {
 
   // Utility function to adjust texture properties
   function configureTexture(texture) {
-    texture.minFilter = LinearFilter;
-    texture.magFilter = LinearFilter;
+    // texture.minFilter = LinearFilter;
+    // texture.magFilter = LinearFilter;
     if (renderer) {
-      texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      texture.anisotropy = 4;
     }
   }
 
