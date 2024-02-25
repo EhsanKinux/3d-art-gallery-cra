@@ -172,6 +172,7 @@ body {
 .text-gradient {
   background-image: var(--accent-gradient);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 400%;
   background-position: 0%;
@@ -207,6 +208,8 @@ body {
   width: 30%;
   margin-top: 0.5%;
   height: 2%;
+  border-style: solid;
+  border-radius: 16px;
   background: #23f33b;
   box-shadow: 0 0 40px #23f388;
   transition: 0.4s linear;

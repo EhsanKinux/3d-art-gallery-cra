@@ -7,7 +7,7 @@ function Presentation() {
       <label htmlFor="progress-bar" className="text-white">
         Loading assets please wait...
       </label>
-      <progress id="progress-bar" className="w-56" value="0" max="100"></progress>
+      <progress id="progress-bar" value="0" max="100"></progress>
       {/* <div className="text-center mt-4 badge badge-warning gap-2">Pictures will load progressively in sets of 4.</div> */}
       <div className="flex flex-col items-center gap-y-5 md:gap-y-10 w-screen md:w-fit">
         <div
