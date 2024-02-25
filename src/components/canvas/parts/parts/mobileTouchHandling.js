@@ -8,18 +8,21 @@ export function mobileTouchHandling(
   render,
   howMany,
   interactionManager,
-  scrollPercent,
+  savedScroll,
   squares,
   planeConfigs,
   useAppContext,
   navigation,
-  scene,
+  scene
   // initialBatchLoaded,
   // lastLoadedPlaneZ,
   // loadedPlanes,
   // loadPlaneBatches
 ) {
   // let array = useAppContext.state.data;
+  if ("ontouchstart" in window || navigator.maxTouchPoints) {
+    document.body.classList.add("touch-device");
+  }
   let raycaster = new Raycaster();
   let touchPosition = new Vector2();
   let startY = 0;
@@ -75,7 +78,7 @@ export function mobileTouchHandling(
       accumulatedY += deltaY;
 
       // Calculate new scroll percent based on touch movement
-      let newScrollPercent = scrollPercent - deltaY * touchSensitivity;
+      let newScrollPercent = savedScroll + deltaY * touchSensitivity;
 
       // Ensure newScrollPercent is within boundaries
       // if (newScrollPercent < 0) {
@@ -88,7 +91,7 @@ export function mobileTouchHandling(
       newScrollPercent = Math.max(0, Math.min(newScrollPercent, maxScroll));
 
       // Apply the bounded newScrollPercent
-      scrollPercent = newScrollPercent;
+      savedScroll = newScrollPercent;
 
       // Update the camera and scene based on the simulated scroll
       render();
@@ -103,16 +106,16 @@ export function mobileTouchHandling(
     { passive: false }
   );
 
-  document.addEventListener("touchend", function () {
-    if (accumulatedY !== 0) {
-      accumulatedY = 0; // Resetting accumulatedY after the touch ends
-    }
-    interactionManager.update();
-  });
+  // document.addEventListener("touchend", function () {
+  //   if (accumulatedY !== 0) {
+  //     accumulatedY = 0; // Resetting accumulatedY after the touch ends
+  //   }
+  //   interactionManager.update();
+  // });
 
   function playScrollAnimation() {
     camera.lookAt(new Vector3(...planeConfigs[0].position));
-    camera.position.z = -scrollPercent / 2 / howMany;
+    camera.position.z = -savedScroll / 2 / howMany;
     squareChecker(camera.position.z, squares);
 
     // const loadThreshold = 0.5;

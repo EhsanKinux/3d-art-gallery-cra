@@ -211,7 +211,7 @@ export function callThreeJS(useAppContext, howMany, navigation) {
       render,
       howMany,
       interactionManager,
-      scrollPercent,
+      savedScroll,
       squares,
       planeConfigs,
       useAppContext,

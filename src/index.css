@@ -236,3 +236,10 @@ body {
 .no-scroll {
   overflow: hidden;
 }
+
+.touch-device ::-webkit-scrollbar,
+.touch-device {
+  display: none; /* for Chrome, Safari, and Opera */
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+}
