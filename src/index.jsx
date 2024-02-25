@@ -5,7 +5,7 @@ import App from "./App";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import AppContext from "./context/AppContext";
 import Presentation from "./components/loading/Presentation";
-import Loading from "./components/loading/Loading";
+// import Loading from "./components/loading/Loading";
 
 const router = createBrowserRouter([
   {
@@ -23,7 +23,7 @@ root.render(
   // <React.StrictMode>
     <AppContext>
       <Presentation />
-      <Loading />
+      {/* <Loading /> */}
       <RouterProvider router={router} />
     </AppContext>
   // {/* </React.StrictMode> */}

@@ -14,12 +14,12 @@ export function mobileTouchHandling(
   useAppContext,
   navigation,
   scene,
-  initialBatchLoaded,
-  lastLoadedPlaneZ,
-  loadedPlanes,
-  loadPlaneBatches
+  // initialBatchLoaded,
+  // lastLoadedPlaneZ,
+  // loadedPlanes,
+  // loadPlaneBatches
 ) {
-  let array = useAppContext.state.data;
+  // let array = useAppContext.state.data;
   let raycaster = new Raycaster();
   let touchPosition = new Vector2();
   let startY = 0;
@@ -115,16 +115,16 @@ export function mobileTouchHandling(
     camera.position.z = -scrollPercent / 2 / howMany;
     squareChecker(camera.position.z, squares);
 
-    const loadThreshold = 0.5;
-    if (!initialBatchLoaded || (camera.position.z <= lastLoadedPlaneZ + loadThreshold && loadedPlanes < array.length)) {
-      loadPlaneBatches().then();
-      initialBatchLoaded = true; // Mark the initial batch as loaded
-    }
+    // const loadThreshold = 0.5;
+    // if (!initialBatchLoaded || (camera.position.z <= lastLoadedPlaneZ + loadThreshold && loadedPlanes < array.length)) {
+    //   loadPlaneBatches().then();
+    //   initialBatchLoaded = true; // Mark the initial batch as loaded
+    // }
   }
 
   // Make sure the initial batch of planes is loaded when the application starts
-  if (!initialBatchLoaded) {
-    loadPlaneBatches().then(); // This will load the first batch of planes
-    initialBatchLoaded = false; // Ensure we don't load it again unintentionally
-  }
+  // if (!initialBatchLoaded) {
+  //   loadPlaneBatches().then(); // This will load the first batch of planes
+  //   initialBatchLoaded = true; // Ensure we don't load it again unintentionally
+  // }
 }
