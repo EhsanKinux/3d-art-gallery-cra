@@ -4,7 +4,7 @@ export function squareChecker(zCamera, squares) {
     const { z } = square.position;
     const deltaZ = zCamera - z;
     if (deltaZ <= minimalDistance && deltaZ > 0) {
-      const diffZ = 2 * (minimalDistance - deltaZ);
+      const diffZ = 3 * (minimalDistance - deltaZ);
       // Determine the corner for this square
       const corner = index % 4; // This will give us a value from 0 to 3
       let targetX, targetY;
